@@ -1,3 +1,9 @@
 Flask==2.3.3
 Werkzeug==2.3.7
 gunicorn
+python-telegram-bot
+flask
+requsts
+telebot
+bs4
+beutifulsoup
