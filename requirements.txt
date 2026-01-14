@@ -3,7 +3,7 @@ Werkzeug==2.3.7
 gunicorn
 python-telegram-bot
 flask
-requsts
+requests
 telebot
 bs4
 beutifulsoup
