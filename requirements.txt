@@ -6,4 +6,3 @@ flask
 requests
 telebot
 bs4
-beutifulsoup
