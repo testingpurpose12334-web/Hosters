@@ -1,0 +1,542 @@
+<!-- templates/edit_file.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit {{ filename }} - {{ bot_id }}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #2c3e50;
+            color: #333;
+            line-height: 1.6;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        header {
+            background: #34495e;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        
+        .header-left h1 {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .header-left .path {
+            color: #bdc3c7;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #219653;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #1a1a1a;
+            overflow: hidden;
+        }
+        
+        .editor-header {
+            background: #2c3e50;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .file-icon {
+            font-size: 20px;
+        }
+        
+        #editor {
+            flex: 1;
+            width: 100%;
+            background: #1a1a1a;
+            color: #f0f0f0;
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            padding: 20px;
+            border: none;
+            outline: none;
+            resize: none;
+            overflow-y: auto;
+            white-space: pre;
+            tab-size: 4;
+        }
+        
+        .editor-footer {
+            background: #2c3e50;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .editor-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: #27ae60;
+            color: white;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: none;
+        }
+        
+        .notification.error {
+            background: #e74c3c;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+        }
+        
+        .spinner {
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        #fileSize {
+            color: #bdc3c7;
+            font-size: 12px;
+        }
+        
+        .btn:disabled {
+            background: #7f8c8d;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <h1>📝 Editing: {{ filename }}</h1>
+                <div class="path">{{ bot_id }} / {{ filename }}</div>
+            </div>
+            <div>
+                <a href="/bot/{{ bot_id }}/manage" class="btn btn-secondary">← Back</a>
+            </div>
+        </header>
+        
+        <div class="editor-container">
+            <div class="editor-header">
+                <div class="file-info">
+                    <div class="file-icon">
+                        {% if filename.endswith('.py') %}🐍
+                        {% elif filename.endswith('.txt') %}📄
+                        {% elif filename.endswith('.json') %}📊
+                        {% elif filename.endswith('.html') %}🌐
+                        {% elif filename.endswith('.js') %}📜
+                        {% elif filename.endswith('.css') %}🎨
+                        {% else %}📁{% endif %}
+                    </div>
+                    <div>
+                        <div>{{ filename }}</div>
+                        <div id="fileSize">Loading...</div>
+                    </div>
+                </div>
+                <button onclick="saveFile()" class="btn btn-success" id="saveBtn">
+                    💾 Save
+                </button>
+            </div>
+            
+            <textarea id="editor" placeholder="Loading file content..."></textarea>
+            
+            <div class="editor-footer">
+                <div style="color: #bdc3c7;">
+                    <span id="lineCount">Line: 1, Col: 1</span>
+                    <span style="margin-left: 20px;" id="charCount">Chars: 0</span>
+                </div>
+                <div class="editor-actions">
+                    <button onclick="saveFile()" class="btn btn-success btn-small">💾 Save</button>
+                    <button onclick="discardChanges()" class="btn btn-secondary btn-small">↩️ Discard</button>
+                    <button onclick="restartBot()" class="btn btn-primary btn-small">🔄 Restart Bot</button>
+                    <button onclick="deleteFile()" class="btn btn-danger btn-small">🗑 Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <div style="margin-bottom: 15px; font-weight: 500;" id="confirmMessage"></div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button onclick="closeConfirmModal()" class="btn btn-secondary">Cancel</button>
+                <button onclick="confirmAction()" class="btn btn-danger" id="confirmBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification"></div>
+
+    <script>
+        const botId = '{{ bot_id }}';
+        const filename = '{{ filename }}';
+        let originalContent = '';
+        let isModified = false;
+        let pendingAction = null;
+        
+        // Load file content
+        async function loadFile() {
+            try {
+                const response = await fetch(`/bot/${botId}/view/${filename}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const editor = document.getElementById('editor');
+                    editor.value = data.content;
+                    originalContent = data.content;
+                    
+                    // Update file size
+                    document.getElementById('fileSize').textContent = formatFileSize(data.size);
+                    
+                    // Set up change detection
+                    editor.addEventListener('input', () => {
+                        const currentContent = editor.value;
+                        isModified = currentContent !== originalContent;
+                        updateSaveButton();
+                        updateLineCount();
+                    });
+                    
+                    // Set up cursor position tracking
+                    editor.addEventListener('keyup', updateLineCount);
+                    editor.addEventListener('click', updateLineCount);
+                    
+                    // Set up beforeunload warning
+                    window.addEventListener('beforeunload', (e) => {
+                        if (isModified) {
+                            e.preventDefault();
+                            e.returnValue = '';
+                        }
+                    });
+                    
+                    // Initialize line count
+                    updateLineCount();
+                    
+                } else {
+                    showNotification('Error loading file: ' + data.error, 'error');
+                }
+            } catch (error) {
+                showNotification('Error: ' + error.message, 'error');
+            }
+        }
+        
+        // Save file
+        async function saveFile() {
+            const content = document.getElementById('editor').value;
+            const saveBtn = document.getElementById('saveBtn');
+            const originalText = saveBtn.innerHTML;
+            
+            saveBtn.innerHTML = '<span class="spinner">⏳</span> Saving...';
+            saveBtn.disabled = true;
+            
+            try {
+                const response = await fetch(`/bot/${botId}/edit/${filename}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ content: content })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showNotification('File saved successfully!');
+                    originalContent = content;
+                    isModified = false;
+                    updateSaveButton();
+                } else {
+                    showNotification('Error saving file: ' + data.error, 'error');
+                }
+            } catch (error) {
+                showNotification('Error: ' + error.message, 'error');
+            } finally {
+                saveBtn.innerHTML = originalText;
+                saveBtn.disabled = false;
+            }
+        }
+        
+        // Discard changes
+        function discardChanges() {
+            if (!isModified) return;
+            
+            showConfirmModal(
+                'Discard all changes?',
+                'Are you sure you want to discard all changes? This cannot be undone.',
+                () => {
+                    document.getElementById('editor').value = originalContent;
+                    isModified = false;
+                    updateSaveButton();
+                    showNotification('Changes discarded');
+                }
+            );
+        }
+        
+        // Delete file
+        function deleteFile() {
+            showConfirmModal(
+                'Delete file?',
+                `Are you sure you want to delete "${filename}"? This cannot be undone.`,
+                async () => {
+                    try {
+                        const response = await fetch(`/bot/${botId}/delete_file/${filename}`, {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'}
+                        });
+                        
+                        const data = await response.json();
+                        if (response.ok) {
+                            showNotification('File deleted');
+                            setTimeout(() => {
+                                window.location.href = `/bot/${botId}/manage`;
+                            }, 1000);
+                        } else {
+                            showNotification('Error: ' + data.error, 'error');
+                        }
+                    } catch (error) {
+                        showNotification('Error: ' + error.message, 'error');
+                    }
+                }
+            );
+        }
+        
+        // Restart bot
+        function restartBot() {
+            showConfirmModal(
+                'Restart bot?',
+                'This will stop and restart the bot. Any unsaved changes will be lost.',
+                async () => {
+                    try {
+                        const response = await fetch(`/bot/${botId}/restart`, {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'}
+                        });
+                        
+                        const data = await response.json();
+                        if (response.ok) {
+                            showNotification('Bot restarted');
+                        } else {
+                            showNotification('Error: ' + data.error, 'error');
+                        }
+                    } catch (error) {
+                        showNotification('Error: ' + error.message, 'error');
+                    }
+                }
+            );
+        }
+        
+        // Update save button state
+        function updateSaveButton() {
+            const saveBtn = document.getElementById('saveBtn');
+            if (isModified) {
+                saveBtn.innerHTML = '💾 Save*';
+                saveBtn.style.background = '#f39c12';
+            } else {
+                saveBtn.innerHTML = '💾 Save';
+                saveBtn.style.background = '#27ae60';
+            }
+        }
+        
+        // Update line and column count
+        function updateLineCount() {
+            const editor = document.getElementById('editor');
+            const text = editor.value.substring(0, editor.selectionStart);
+            const lines = text.split('\n');
+            const line = lines.length;
+            const col = lines[lines.length - 1].length + 1;
+            
+            document.getElementById('lineCount').textContent = `Line: ${line}, Col: ${col}`;
+            document.getElementById('charCount').textContent = `Chars: ${editor.value.length}`;
+        }
+        
+        // Modal functions
+        function showConfirmModal(title, message, action) {
+            document.getElementById('confirmMessage').innerHTML = `
+                <strong>${title}</strong><br>
+                <div style="margin-top: 5px; color: #666;">${message}</div>
+            `;
+            pendingAction = action;
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+        
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+            pendingAction = null;
+        }
+        
+        function confirmAction() {
+            if (pendingAction) {
+                pendingAction();
+            }
+            closeConfirmModal();
+        }
+        
+        // Helper functions
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+        
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = 'notification ' + type;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+S to save
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                saveFile();
+            }
+            
+            // Ctrl+Q to go back
+            if ((e.ctrlKey || e.metaKey) && e.key === 'q') {
+                e.preventDefault();
+                if (isModified) {
+                    if (confirm('You have unsaved changes. Are you sure you want to leave?')) {
+                        window.location.href = `/bot/${botId}/manage`;
+                    }
+                } else {
+                    window.location.href = `/bot/${botId}/manage`;
+                }
+            }
+            
+            // Ctrl+R to restart bot
+            if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+                e.preventDefault();
+                restartBot();
+            }
+            
+            // Escape to close modal
+            if (e.key === 'Escape') {
+                closeConfirmModal();
+            }
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', loadFile);
+    </script>
+</body>
+  </html>
