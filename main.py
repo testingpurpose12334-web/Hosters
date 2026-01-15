@@ -1110,3 +1110,4 @@ if __name__ == '__main__':
     except Exception as e:
         print(f"❌ Server error: {e}")
         save_state_on_exit()
+
