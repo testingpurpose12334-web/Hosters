@@ -1,31 +1,36 @@
-﻿<!-- templates/manage_bot.html -->
+<!-- templates/manage_bot.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage {{ bot_id }} - Bot Hosting Platform</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
         }
         
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
+            padding: 20px;
         }
         
         header {
-            background: #2d3748;
+            background: #2c3e50;
             color: white;
-            padding: 24px 32px;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -34,7 +39,7 @@
         .header-left {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
         }
         
         .logo {
@@ -43,83 +48,106 @@
         }
         
         .bot-title {
-            font-size: 20px;
-            color: #a0aec0;
+            font-size: 18px;
+            color: #bdc3c7;
         }
         
         .status-indicator {
-            display: inline-flex;
-            align-items: center;
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 12px;
-            font-weight: bold;
+            font-weight: 600;
             text-transform: uppercase;
-            margin-left: 10px;
         }
         
         .status-running {
-            background: #c6f6d5;
-            color: #22543d;
+            background: #d4edda;
+            color: #155724;
         }
         
         .status-stopped {
-            background: #fed7d7;
-            color: #742a2a;
+            background: #f8d7da;
+            color: #721c24;
         }
         
         .main-content {
             display: grid;
-            grid-template-columns: 300px 1fr;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
             min-height: 600px;
         }
         
         .sidebar {
-            background: #f7fafc;
-            border-right: 1px solid #e2e8f0;
-            padding: 24px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
         .content {
-            padding: 24px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
         .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
             display: inline-flex;
             align-items: center;
-            padding: 10px 20px;
-            background: #4299e1;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 500;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
-            width: 100%;
             justify-content: center;
-            margin-bottom: 12px;
-        }
-        
-        .btn:hover {
-            background: #3182ce;
-            transform: translateY(-1px);
+            width: 100%;
+            margin-bottom: 10px;
         }
         
         .btn-success {
-            background: #48bb78;
+            background: #27ae60;
+            color: white;
         }
         
         .btn-success:hover {
-            background: #38a169;
+            background: #219653;
         }
         
         .btn-danger {
-            background: #f56565;
+            background: #e74c3c;
+            color: white;
         }
         
         .btn-danger:hover {
-            background: #e53e3e;
+            background: #c0392b;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 12px;
+            width: auto;
+            margin: 2px;
         }
         
         .file-list {
@@ -130,119 +158,53 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 4px;
             margin-bottom: 8px;
+            border: 1px solid #e9ecef;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: background 0.3s;
         }
         
         .file-item:hover {
-            background: #ebf8ff;
-            border-color: #4299e1;
-        }
-        
-        .file-item.active {
-            background: #bee3f8;
-            border-color: #4299e1;
+            background: #e9ecef;
         }
         
         .file-name {
-            color: #2d3748;
-        }
-        
-        .file-size {
-            color: #718096;
-            font-size: 12px;
-        }
-        
-        .log-container {
-            background: #1a202c;
-            color: #cbd5e0;
-            font-family: 'Monaco', 'Menlo', monospace;
-            padding: 20px;
-            border-radius: 8px;
-            height: 500px;
-            overflow-y: auto;
-            font-size: 14px;
-            line-height: 1.5;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-        
-        .log-line {
-            margin-bottom: 4px;
-            border-left: 3px solid transparent;
-            padding-left: 10px;
-        }
-        
-        .log-line.error {
-            border-left-color: #f56565;
-            color: #feb2b2;
-        }
-        
-        .log-line.info {
-            border-left-color: #4299e1;
-        }
-        
-        .log-line.success {
-            border-left-color: #48bb78;
-        }
-        
-        .controls {
+            color: #2c3e50;
             display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
+            align-items: center;
+            gap: 8px;
         }
         
-        .controls .btn {
-            width: auto;
-            min-width: 120px;
-        }
-        
-        .info-box {
-            background: #f0fff4;
-            border: 1px solid #c6f6d5;
-            border-radius: 6px;
-            padding: 16px;
-            margin-bottom: 20px;
-            color: #22543d;
-        }
-        
-        .info-box.error {
-            background: #fff5f5;
-            border-color: #fed7d7;
-            color: #742a2a;
-        }
-        
-        .info-box strong {
-            display: block;
-            margin-bottom: 8px;
+        .file-actions {
+            display: flex;
+            gap: 4px;
         }
         
         .tab-navigation {
             display: flex;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e9ecef;
             margin-bottom: 20px;
         }
         
         .tab {
-            padding: 12px 24px;
+            padding: 10px 20px;
             cursor: pointer;
-            color: #718096;
+            color: #7f8c8d;
             border-bottom: 3px solid transparent;
             transition: all 0.3s;
+            font-weight: 500;
         }
         
         .tab:hover {
-            color: #4299e1;
+            color: #3498db;
         }
         
         .tab.active {
-            color: #4299e1;
-            border-bottom-color: #4299e1;
+            color: #3498db;
+            border-bottom-color: #3498db;
         }
         
         .tab-content {
@@ -253,49 +215,49 @@
             display: block;
         }
         
-        .file-content {
-            background: #f7fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 20px;
-            font-family: 'Monaco', 'Menlo', monospace;
+        .log-container {
+            background: #1a1a1a;
+            color: #f0f0f0;
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+            padding: 15px;
+            border-radius: 4px;
+            height: 400px;
+            overflow-y: auto;
+            font-size: 12px;
+            line-height: 1.5;
             white-space: pre-wrap;
             word-wrap: break-word;
-            max-height: 400px;
-            overflow-y: auto;
         }
         
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 20px;
-            background: #48bb78;
-            color: white;
-            border-radius: 6px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transform: translateX(150%);
-            transition: transform 0.3s;
-            z-index: 1000;
+        .log-line {
+            margin-bottom: 2px;
+            padding: 2px 0;
+            border-left: 3px solid transparent;
+            padding-left: 10px;
         }
         
-        .notification.show {
-            transform: translateX(0);
+        .log-line.error {
+            border-left-color: #e74c3c;
+            color: #ff9999;
         }
         
-        .notification.error {
-            background: #f56565;
+        .log-line.info {
+            border-left-color: #3498db;
+        }
+        
+        .log-line.success {
+            border-left-color: #27ae60;
         }
         
         .log-controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         
         .log-refresh {
-            background: #2d3748;
+            background: #2c3e50;
             color: white;
             border: none;
             padding: 8px 16px;
@@ -305,12 +267,95 @@
         }
         
         .log-refresh:hover {
-            background: #4a5568;
+            background: #34495e;
         }
         
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .auto-refresh {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: #27ae60;
+            color: white;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: none;
+        }
+        
+        .notification.error {
+            background: #e74c3c;
+        }
+        
+        .info-box {
+            background: #e8f6f3;
+            border: 1px solid #a3e4d7;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #1d8348;
+        }
+        
+        .info-box.error {
+            background: #fdedec;
+            border-color: #f5b7b1;
+            color: #c0392b;
+        }
+        
+        .terminal-container {
+            background: #1a1a1a;
+            border-radius: 4px;
+            padding: 15px;
+            color: white;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        
+        #terminalOutput {
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 12px;
+        }
+        
+        #terminalInput {
+            width: 100%;
+            padding: 8px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
         }
         
         .spinner {
@@ -318,12 +363,56 @@
             display: inline-block;
         }
         
-        .auto-refresh {
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .controls {
             display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #718096;
-            font-size: 14px;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .controls .btn {
+            width: auto;
+            min-width: 120px;
+        }
+        
+        .files-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .file-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .file-card:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .file-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .file-card-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+            word-break: break-all;
+        }
+        
+        .file-card-info {
+            font-size: 12px;
+            color: #7f8c8d;
         }
     </style>
 </head>
@@ -345,28 +434,39 @@
                 <button id="stopBtn" class="btn btn-danger" onclick="stopBot()" disabled>
                     ⏹ Stop Bot
                 </button>
+                <button onclick="restartBot()" class="btn btn-primary">
+                    🔄 Restart Bot
+                </button>
                 
                 <div class="file-list" id="fileList">
+                    <div style="font-weight: 500; margin-bottom: 10px;">📁 Files</div>
                     <!-- Files will be loaded here -->
                 </div>
                 
-                <button class="btn" onclick="deleteBot()" style="margin-top: 20px; background: #718096;">
+                <button onclick="showCreateFileModal()" class="btn" style="background: #27ae60;">
+                    ➕ New File
+                </button>
+                <button onclick="uploadMoreFiles()" class="btn" style="background: #9b59b6;">
+                    📤 Upload Files
+                </button>
+                <button onclick="deleteBot()" class="btn" style="background: #7f8c8d; margin-top: 20px;">
                     🗑 Delete Bot
                 </button>
             </div>
             
             <div class="content">
                 <div class="tab-navigation">
-                    <div class="tab active" onclick="switchTab('logs')">Live Logs</div>
-                    <div class="tab" onclick="switchTab('files')">File Editor</div>
-                    <div class="tab" onclick="switchTab('info')">Bot Info</div>
+                    <div class="tab active" onclick="switchTab('logs')">📊 Live Logs</div>
+                    <div class="tab" onclick="switchTab('files')">📁 Files</div>
+                    <div class="tab" onclick="switchTab('terminal')">💻 Terminal</div>
+                    <div class="tab" onclick="switchTab('info')">ℹ️ Info</div>
                 </div>
                 
                 <div id="logsTab" class="tab-content active">
                     <div class="log-controls">
                         <button class="log-refresh" onclick="refreshLogs()">
                             <span id="refreshText">⟳ Refresh Logs</span>
-                            <span id="refreshSpinner" class="spinner" style="display: none;">⟳</span>
+                            <span id="refreshSpinner" style="display: none;" class="spinner">⟳</span>
                         </button>
                         <div class="auto-refresh">
                             <input type="checkbox" id="autoRefresh" checked>
@@ -379,12 +479,26 @@
                 </div>
                 
                 <div id="filesTab" class="tab-content">
-                    <div id="fileEditor">
-                        <div class="info-box">
-                            <strong>📁 Select a file from the sidebar to view and edit</strong>
-                            <p>Files are read-only in this demo. For editing, re-upload the modified file.</p>
+                    <div class="info-box">
+                        <strong>📁 File Manager</strong>
+                        <p>Click on any file to edit it. Use the sidebar to create new files or upload more files.</p>
+                    </div>
+                    <div id="filesGrid" class="files-grid">
+                        <!-- Files will be loaded here -->
+                    </div>
+                </div>
+                
+                <div id="terminalTab" class="tab-content">
+                    <div class="info-box">
+                        <strong>💻 Terminal Access</strong>
+                        <p>Execute commands in the bot directory. Commands are executed in the bot's folder.</p>
+                    </div>
+                    <div class="terminal-container">
+                        <div id="terminalOutput" style="color: #f0f0f0;"></div>
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <input type="text" id="terminalInput" placeholder="Enter command (e.g., dir, ls, python --version)">
+                            <button onclick="executeTerminalCommand()" style="background: #3498db; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Execute</button>
                         </div>
-                        <div id="fileContent" class="file-content" style="display: none;"></div>
                     </div>
                 </div>
                 
@@ -392,313 +506,111 @@
                     <div class="info-box" id="infoBox">
                         Loading bot information...
                     </div>
-                    <div id="botDetails">
-                        <!-- Bot details will be loaded here -->
-                    </div>
+                    <div id="botDetails"></div>
                 </div>
             </div>
         </div>
     </div>
-
-    <div id="notification" class="notification"></div>
+    
+    <!-- Create File Modal -->
+    <div id="createFileModal" class="modal">
+        <div class="modal-content">
+            <div style="font-size: 18px; font-weight: 500; margin-bottom: 15px;">Create New File</div>
+            <div style="margin-bottom: 20px;">
+                <div style="margin-bottom: 10px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">File Name</label>
+                    <input type="text" id="newFileName" placeholder="example.py" value="new_file.py" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Initial Content (optional)</label>
+                    <textarea id="newFileContent" rows="4" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-family: monospace;" placeholder="# Your code here..."></textarea>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button onclick="closeCreateFileModal()" class="btn btn-secondary" style="width: auto;">Cancel</button>
+                <button onclick="createFile()" class="btn btn-success" style="width: auto;">Create</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification"></div>
 
     <script>
         const botId = '{{ bot_id }}';
         let autoRefreshInterval;
-        let currentFile = null;
+        let currentStatus = '{{ "running" if is_running else "stopped" }}';
         
-        function showNotification(message, type = 'success') {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = `notification ${type} show`;
+        // Update status indicator
+        function updateStatus() {
+            const statusIndicator = document.getElementById('statusIndicator');
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
             
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-        
-        async function updateStatus() {
-            try {
-                const response = await fetch(`/bot/${botId}/status`);
-                const data = await response.json();
-                
-                const statusIndicator = document.getElementById('statusIndicator');
-                const startBtn = document.getElementById('startBtn');
-                const stopBtn = document.getElementById('stopBtn');
-                
-                if (data.status === 'running') {
-                    statusIndicator.className = 'status-indicator status-running';
-                    statusIndicator.textContent = 'RUNNING';
-                    startBtn.disabled = true;
-                    stopBtn.disabled = false;
-                } else {
-                    statusIndicator.className = 'status-indicator status-stopped';
-                    statusIndicator.textContent = 'STOPPED';
-                    startBtn.disabled = false;
-                    stopBtn.disabled = true;
-                }
-            } catch (error) {
-                console.error('Error updating status:', error);
+            statusIndicator.className = `status-indicator status-${currentStatus}`;
+            statusIndicator.textContent = currentStatus.toUpperCase();
+            
+            if (currentStatus === 'running') {
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+            } else {
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
             }
         }
         
+        // Load files
         async function loadFiles() {
             try {
                 const response = await fetch(`/bot/${botId}/files`);
                 const data = await response.json();
                 
+                if (!response.ok) {
+                    showNotification('Error loading files: ' + data.error, 'error');
+                    return;
+                }
+                
                 const fileList = document.getElementById('fileList');
-                let html = '<div style="color: #718096; margin-bottom: 12px; font-size: 14px;">Bot Files:</div>';
+                const filesGrid = document.getElementById('filesGrid');
                 
-                data.files.forEach(file => {
-                    html += `
-                        <div class="file-item" onclick="viewFile('${file.name}')">
-                            <div class="file-name">${file.name}</div>
-                            <div class="file-size">${formatFileSize(file.size)}</div>
-                        </div>
-                    `;
-                });
+                let listHtml = '<div style="font-weight: 500; margin-bottom: 10px;">📁 Files</div>';
+                let gridHtml = '';
                 
-                fileList.innerHTML = html;
-            } catch (error) {
-                console.error('Error loading files:', error);
-            }
-        }
-        
-        async function viewFile(filename) {
-            try {
-                const response = await fetch(`/bot/${botId}/file/${filename}`);
-                const data = await response.json();
-                
-                currentFile = filename;
-                
-                // Update active file in list
-                document.querySelectorAll('.file-item').forEach(item => {
-                    item.classList.remove('active');
-                });
-                event.target.closest('.file-item').classList.add('active');
-                
-                const fileContent = document.getElementById('fileContent');
-                fileContent.textContent = data.content;
-                fileContent.style.display = 'block';
-                
-                // Switch to files tab
-                switchTab('files');
-            } catch (error) {
-                showNotification('Error loading file', 'error');
-            }
-        }
-        
-        async function refreshLogs() {
-            const refreshText = document.getElementById('refreshText');
-            const refreshSpinner = document.getElementById('refreshSpinner');
-            
-            refreshText.style.display = 'none';
-            refreshSpinner.style.display = 'inline-block';
-            
-            try {
-                const response = await fetch(`/bot/${botId}/logs`);
-                const data = await response.json();
-                
-                const logContainer = document.getElementById('logContainer');
-                logContainer.innerHTML = '';
-                
-                data.logs.forEach(log => {
-                    const line = document.createElement('div');
-                    line.className = 'log-line';
-                    
-                    if (log.includes('ERROR') || log.includes('Error') || log.includes('error')) {
-                        line.className += ' error';
-                    } else if (log.includes('INFO') || log.includes('Info')) {
-                        line.className += ' info';
-                    } else if (log.includes('SUCCESS') || log.includes('Success')) {
-                        line.className += ' success';
-                    }
-                    
-                    line.textContent = log;
-                    logContainer.appendChild(line);
-                });
-                
-                // Scroll to bottom
-                logContainer.scrollTop = logContainer.scrollHeight;
-                
-                // Update status based on logs response
-                if (data.status) {
-                    updateStatus();
-                }
-            } catch (error) {
-                console.error('Error refreshing logs:', error);
-            } finally {
-                refreshText.style.display = 'inline-block';
-                refreshSpinner.style.display = 'none';
-            }
-        }
-        
-        async function startBot() {
-            try {
-                const response = await fetch(`/bot/${botId}/start`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    showNotification('Bot started successfully!', 'success');
-                    updateStatus();
-                    
-                    // Auto-refresh logs more frequently when bot is running
-                    if (autoRefreshInterval) {
-                        clearInterval(autoRefreshInterval);
-                    }
-                    autoRefreshInterval = setInterval(refreshLogs, 2000);
+                if (data.files && data.files.length > 0) {
+                    data.files.forEach(file => {
+                        const icon = file.is_python ? '🐍' : 
+                                    file.extension === 'txt' ? '📄' :
+                                    file.extension === 'json' ? '📊' :
+                                    file.extension === 'html' ? '🌐' :
+                                    file.extension === 'js' ? '📜' :
+                                    file.extension === 'css' ? '🎨' : '📁';
+                        
+                        const size = formatFileSize(file.size);
+                        
+                        // For sidebar list
+                        listHtml += `
+                            <div class="file-item" onclick="editFile('${file.name}')">
+                                <div class="file-name">
+                                    ${icon} ${file.name}
+                                </div>
+                                <div class="file-actions">
+                                    <button class="btn btn-small btn-primary" onclick="editFile('${file.name}'); event.stopPropagation();">Edit</button>
+                                    <button class="btn btn-small btn-danger" onclick="deleteFile('${file.name}'); event.stopPropagation();">Del</button>
+                                </div>
+                            </div>
+                        `;
+                        
+                        // For files grid
+                        gridHtml += `
+                            <div class="file-card" onclick="editFile('${file.name}')">
+                                <div class="file-icon">${icon}</div>
+                                <div class="file-card-name">${file.name}</div>
+                                <div class="file-card-info">
+                                    ${size}<br>
+                                    Modified: ${file.modified}
+                                </div>
+                            </div>
+                        `;
+                    });
                 } else {
-                    showNotification(data.error || 'Failed to start bot', 'error');
-                }
-            } catch (error) {
-                showNotification('Error starting bot: ' + error.message, 'error');
-            }
-        }
-        
-        async function stopBot() {
-            try {
-                const response = await fetch(`/bot/${botId}/stop`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    showNotification('Bot stopped successfully!', 'success');
-                    updateStatus();
-                    
-                    // Reset refresh interval
-                    if (autoRefreshInterval) {
-                        clearInterval(autoRefreshInterval);
-                    }
-                    setupAutoRefresh();
-                } else {
-                    showNotification(data.error || 'Failed to stop bot', 'error');
-                }
-            } catch (error) {
-                showNotification('Error stopping bot: ' + error.message, 'error');
-            }
-        }
-        
-        async function deleteBot() {
-            if (!confirm('Are you sure you want to delete this bot? This cannot be undone.')) {
-                return;
-            }
-            
-            try {
-                const response = await fetch(`/bot/${botId}/delete`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    showNotification('Bot deleted successfully!', 'success');
-                    setTimeout(() => {
-                        window.location.href = '/';
-                    }, 1000);
-                } else {
-                    showNotification(data.error || 'Failed to delete bot', 'error');
-                }
-            } catch (error) {
-                showNotification('Error deleting bot: ' + error.message, 'error');
-            }
-        }
-        
-        function switchTab(tabName) {
-            // Update tabs
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            
-            // Activate selected tab
-            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
-            document.getElementById(`${tabName}Tab`).classList.add('active');
-            
-            // Load data for tab if needed
-            if (tabName === 'info') {
-                loadBotInfo();
-            }
-        }
-        
-        async function loadBotInfo() {
-            try {
-                const response = await fetch(`/bot/${botId}/status`);
-                const data = await response.json();
-                
-                const infoBox = document.getElementById('infoBox');
-                const botDetails = document.getElementById('botDetails');
-                
-                infoBox.innerHTML = `
-                    <strong>🤖 Bot Information</strong>
-                    <p>Status: <strong>${data.status.toUpperCase()}</strong></p>
-                    <p>Files: ${data.files.length}</p>
-                `;
-                
-                let filesHtml = '<div style="margin-top: 20px;"><strong>📁 Files:</strong><br>';
-                data.files.forEach(file => {
-                    filesHtml += `<div style="margin: 4px 0; font-family: monospace;">${file}</div>`;
-                });
-                filesHtml += '</div>';
-                
-                botDetails.innerHTML = filesHtml;
-            } catch (error) {
-                console.error('Error loading bot info:', error);
-            }
-        }
-        
-        function formatFileSize(bytes) {
-            if (bytes < 1024) return bytes + ' B';
-            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-        }
-        
-        function setupAutoRefresh() {
-            const autoRefreshCheckbox = document.getElementById('autoRefresh');
-            
-            if (autoRefreshInterval) {
-                clearInterval(autoRefreshInterval);
-            }
-            
-            if (autoRefreshCheckbox.checked) {
-                autoRefreshInterval = setInterval(refreshLogs, 5000);
-            }
-            
-            autoRefreshCheckbox.addEventListener('change', () => {
-                if (autoRefreshCheckbox.checked) {
-                    autoRefreshInterval = setInterval(refreshLogs, 5000);
-                } else {
-                    clearInterval(autoRefreshInterval);
-                }
-            });
-        }
-        
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            updateStatus();
-            loadFiles();
-            refreshLogs();
-            setupAutoRefresh();
-            
-            // Check status every 10 seconds
-            setInterval(updateStatus, 10000);
-        });
-    </script>
-</body>
-</html>
+                    listHtml += '<div style="color: #7f8c8d; padding: 10px; text-align: center;">No files</div>';
+                    g
