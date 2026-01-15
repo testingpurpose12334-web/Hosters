@@ -1,32 +1,36 @@
-﻿<!-- templates/upload.html -->
+<!-- templates/upload.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Bot - Bot Hosting Platform</title>
+    <title>Upload Bot</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        /* Same styles as index.html */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
         }
         
         .container {
             max-width: 800px;
-            margin: 40px auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
+            margin: 0 auto;
+            padding: 20px;
         }
         
         header {
-            background: #2d3748;
+            background: #2c3e50;
             color: white;
-            padding: 24px 32px;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -37,75 +41,68 @@
             font-weight: bold;
         }
         
-        .main-content {
-            padding: 32px;
-        }
-        
-        .upload-form {
-            max-width: 600px;
-            margin: 0 auto;
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
         .form-group {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
         
         label {
             display: block;
             margin-bottom: 8px;
-            color: #4a5568;
             font-weight: 500;
-            font-size: 14px;
+            color: #2c3e50;
         }
         
         input[type="text"] {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e0;
-            border-radius: 6px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
             font-size: 16px;
-            transition: all 0.3s;
+            transition: border 0.3s;
         }
         
         input[type="text"]:focus {
+            border-color: #3498db;
             outline: none;
-            border-color: #4299e1;
-            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
         }
         
         .upload-area {
-            border: 2px dashed #cbd5e0;
+            border: 2px dashed #3498db;
             border-radius: 8px;
             padding: 40px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
-            background: #f7fafc;
+            background: #f8f9fa;
         }
         
         .upload-area:hover {
-            border-color: #4299e1;
-            background: #ebf8ff;
+            border-color: #2980b9;
+            background: #e8f4fc;
         }
         
         .upload-icon {
             font-size: 48px;
-            color: #a0aec0;
-            margin-bottom: 16px;
+            margin-bottom: 15px;
+            color: #3498db;
         }
         
         .upload-text {
-            color: #718096;
-            margin-bottom: 8px;
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #2c3e50;
         }
         
         .upload-hint {
-            color: #a0aec0;
             font-size: 14px;
-        }
-        
-        #fileInput {
-            display: none;
+            color: #7f8c8d;
         }
         
         #fileList {
@@ -118,26 +115,25 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px;
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
             margin-bottom: 8px;
+            border: 1px solid #e9ecef;
         }
         
         .file-name {
-            flex: 1;
-            color: #2d3748;
+            color: #2c3e50;
         }
         
         .file-size {
-            color: #718096;
-            font-size: 14px;
-            margin-right: 12px;
+            color: #7f8c8d;
+            font-size: 12px;
+            margin-right: 10px;
         }
         
         .remove-file {
-            background: #f56565;
+            background: #e74c3c;
             color: white;
             border: none;
             width: 24px;
@@ -147,63 +143,113 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
         }
         
         .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
             display: inline-flex;
             align-items: center;
-            padding: 12px 24px;
-            background: #4299e1;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 500;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
+            justify-content: center;
         }
         
-        .btn:hover {
-            background: #3182ce;
-            transform: translateY(-1px);
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #219653;
         }
         
         .btn:disabled {
-            background: #cbd5e0;
+            background: #bdc3c7;
             cursor: not-allowed;
-            transform: none;
         }
         
         .btn-group {
             display: flex;
-            gap: 12px;
-            margin-top: 32px;
+            gap: 10px;
+            margin-top: 30px;
         }
         
-        .btn-secondary {
-            background: #e2e8f0;
-            color: #4a5568;
+        .auto-restart-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
         }
         
-        .btn-secondary:hover {
-            background: #cbd5e0;
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
         }
         
-        .requirements-hint {
-            background: #f0fff4;
-            border: 1px solid #c6f6d5;
-            border-radius: 6px;
-            padding: 16px;
-            margin-top: 20px;
-            color: #22543d;
-            font-size: 14px;
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
         }
         
-        .requirements-hint strong {
-            display: block;
-            margin-bottom: 8px;
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 20px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #27ae60;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(20px);
         }
         
         .notification {
@@ -211,21 +257,21 @@
             top: 20px;
             right: 20px;
             padding: 15px 20px;
-            background: #48bb78;
+            background: #27ae60;
             color: white;
-            border-radius: 6px;
+            border-radius: 4px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transform: translateX(150%);
-            transition: transform 0.3s;
             z-index: 1000;
-        }
-        
-        .notification.show {
-            transform: translateX(0);
+            display: none;
         }
         
         .notification.error {
-            background: #f56565;
+            background: #e74c3c;
+        }
+        
+        .spinner {
+            animation: spin 1s linear infinite;
+            display: inline-block;
         }
         
         @keyframes spin {
@@ -233,58 +279,70 @@
             to { transform: rotate(360deg); }
         }
         
-        .spinner {
-            animation: spin 1s linear infinite;
-            display: inline-block;
+        .requirements-hint {
+            background: #e8f6f3;
+            border: 1px solid #a3e4d7;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #1d8348;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <div class="logo">🤖 Upload Bot</div>
+            <div class="logo">📤 Upload Bot</div>
             <div>
-                <a href="/" style="color: white; text-decoration: none;">← Back to Dashboard</a>
+                <a href="/" class="btn btn-secondary">← Back to Dashboard</a>
             </div>
         </header>
         
-        <div class="main-content">
-            <div class="upload-form">
+        <div class="form-container">
+            <form id="uploadForm">
                 <div class="form-group">
                     <label for="botName">Bot Name</label>
-                    <input type="text" id="botName" placeholder="e.g., My Discord Bot" value="My Bot">
+                    <input type="text" id="botName" placeholder="My Discord Bot" value="My Bot">
                 </div>
                 
                 <div class="form-group">
-                    <label>Upload Bot Files</label>
+                    <label>Bot Files</label>
                     <div class="upload-area" onclick="document.getElementById('fileInput').click()">
                         <div class="upload-icon">📁</div>
                         <div class="upload-text">Click to upload or drag and drop</div>
-                        <div class="upload-hint">Python files, requirements.txt, config files (max 16MB)</div>
-                        <input type="file" id="fileInput" multiple onchange="handleFileSelect(event)">
+                        <div class="upload-hint">Python files, requirements.txt, config files</div>
+                        <input type="file" id="fileInput" multiple style="display: none;" onchange="handleFileSelect(event)">
                     </div>
                     
                     <div id="fileList"></div>
                 </div>
                 
+                <div class="auto-restart-option">
+                    <label class="toggle">
+                        <input type="checkbox" id="autoRestart" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span>Auto-restart bot on server restart</span>
+                </div>
+                
                 <div class="requirements-hint">
-                    <strong>💡 Pro Tip:</strong>
-                    Include a <code>requirements.txt</code> file to automatically install dependencies.
-                    Make sure your main bot file is named <code>main.py</code>, <code>bot.py</code>, or contains your bot name.
+                    <strong>💡 Tip:</strong> Include a <code>requirements.txt</code> file to automatically install dependencies.
+                    Make sure your main bot file is named <code>main.py</code>, <code>bot.py</code>, or <code>app.py</code>.
                 </div>
                 
                 <div class="btn-group">
-                    <button id="uploadBtn" class="btn" onclick="uploadFiles()">
-                        <span id="uploadText">Upload & Install Bot</span>
-                        <span id="uploadSpinner" style="display: none;" class="spinner">⟳</span>
+                    <button type="button" onclick="uploadFiles()" class="btn btn-success" id="uploadBtn">
+                        <span id="uploadText">🚀 Upload & Install Bot</span>
+                        <span id="uploadSpinner" style="display: none;" class="spinner">⏳</span>
                     </button>
                     <a href="/" class="btn btn-secondary">Cancel</a>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
-
-    <div id="notification" class="notification"></div>
+    
+    <div class="notification" id="notification"></div>
 
     <script>
         let files = [];
@@ -299,11 +357,11 @@
             const fileList = document.getElementById('fileList');
             
             if (files.length === 0) {
-                fileList.innerHTML = '';
+                fileList.innerHTML = '<div style="text-align: center; padding: 20px; color: #7f8c8d;">No files selected</div>';
                 return;
             }
             
-            let html = '<div style="margin-bottom: 8px; color: #718096; font-size: 14px;">Selected files:</div>';
+            let html = '<div style="margin-bottom: 10px; color: #2c3e50; font-weight: 500;">Selected files:</div>';
             
             files.forEach((file, index) => {
                 const size = file.size > 1024 * 1024 
@@ -313,8 +371,10 @@
                 html += `
                     <div class="file-item">
                         <div class="file-name">${file.name}</div>
-                        <div class="file-size">${size}</div>
-                        <button class="remove-file" onclick="removeFile(${index})">×</button>
+                        <div style="display: flex; align-items: center;">
+                            <span class="file-size">${size}</span>
+                            <button class="remove-file" onclick="removeFile(${index})">×</button>
+                        </div>
                     </div>
                 `;
             });
@@ -327,6 +387,17 @@
             renderFileList();
         }
         
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = 'notification ' + type;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
         async function uploadFiles() {
             if (files.length === 0) {
                 showNotification('Please select at least one file', 'error');
@@ -334,6 +405,7 @@
             }
             
             const botName = document.getElementById('botName').value.trim() || 'My Bot';
+            const autoRestart = document.getElementById('autoRestart').checked;
             const uploadBtn = document.getElementById('uploadBtn');
             const uploadText = document.getElementById('uploadText');
             const uploadSpinner = document.getElementById('uploadSpinner');
@@ -345,6 +417,7 @@
             try {
                 const formData = new FormData();
                 formData.append('bot_name', botName);
+                formData.append('auto_restart', autoRestart);
                 
                 files.forEach(file => {
                     formData.append('files[]', file);
@@ -358,7 +431,7 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    showNotification(`Successfully uploaded ${data.files.length} files!`, 'success');
+                    showNotification(`Successfully uploaded ${data.files.length} files!`);
                     setTimeout(() => {
                         window.location.href = '/';
                     }, 1500);
@@ -374,39 +447,32 @@
             }
         }
         
-        function showNotification(message, type = 'success') {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = `notification ${type} show`;
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-        
         // Drag and drop support
         const uploadArea = document.querySelector('.upload-area');
         
         uploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
-            uploadArea.style.borderColor = '#4299e1';
-            uploadArea.style.background = '#ebf8ff';
+            uploadArea.style.borderColor = '#27ae60';
+            uploadArea.style.background = '#e8f6f3';
         });
         
         uploadArea.addEventListener('dragleave', () => {
-            uploadArea.style.borderColor = '#cbd5e0';
-            uploadArea.style.background = '#f7fafc';
+            uploadArea.style.borderColor = '#3498db';
+            uploadArea.style.background = '#f8f9fa';
         });
         
         uploadArea.addEventListener('drop', (e) => {
             e.preventDefault();
-            uploadArea.style.borderColor = '#cbd5e0';
-            uploadArea.style.background = '#f7fafc';
+            uploadArea.style.borderColor = '#3498db';
+            uploadArea.style.background = '#f8f9fa';
             
             const droppedFiles = Array.from(e.dataTransfer.files);
             files = [...files, ...droppedFiles];
             renderFileList();
         });
+        
+        // Initialize
+        renderFileList();
     </script>
 </body>
 </html>
